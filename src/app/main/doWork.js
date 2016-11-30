@@ -26,7 +26,7 @@ self.onmessage = function(e) {
 			data.count = e.data.count;
 			onTimeout();
 			break;
-		case 'stop': 
+		case 'pause': 
 			cancelTimer();
 			break;
 		case 'finalizar':

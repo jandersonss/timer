@@ -31,14 +31,24 @@
 									<th>Inicio</th>
 									<th>Final</th>
 									<th>Tempo usado</th>
+									<th></th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr ng-repeat="(key, tarefa) in vm.listaTarefas | orderBy : 'final':true">
+								<tr ng-repeat="(key, tarefa) in vm.listaTarefas">
 									<td>{{tarefa.descricao}}</td>
 									<td>{{tarefa.inicio | date : 'dd/MM/yyyy HH:mm:ss'}}</td>
 									<td>{{tarefa.final | date : 'dd/MM/yyyy HH:mm:ss'}}</td>
 									<td>{{tarefa.count | formatTimer}}</td>
+									<td>
+										<button 
+											title="Excluir"
+											ng-click="vm.removeTarefa(key)"
+											type="button" 
+											class="btn btn-xs btn-danger">
+												<i class="glyphicon glyphicon-trash"></i>
+										</button>
+									</td>
 								</tr>
 							</tbody>
 						</table>
@@ -57,7 +67,7 @@
 							<tbody>
 								<tr ng-repeat="(key, value) in vm.listaOciosidade">
 									<td>{{value.data | date : 'dd/MM/yyyy HH:mm:ss'}}</td>
-									<td>{{value.total | formatTimer}}</td>
+									<td>{{vm.getOciosidade(value.total) | formatTimer}}</td>
 								</tr>
 							</tbody>
 						</table>

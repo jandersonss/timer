@@ -5,11 +5,9 @@
 	.filter('formatTimer', function() {
 	  return function(input)
 	    {
-	        function z(n) {return (n<10? '0' : '') + n;}
-	        var seconds = (input%3600)%60;
-	        var minutes = Math.floor((input%3600)/60);
-	        var hours = Math.floor(minutes / 60);
-	        return (z(hours) +':'+z(minutes)+':'+z(seconds));
+	        return moment("2016-01-01").startOf('day')
+		    .seconds(input)
+		    .format('HH:mm:ss');
 	    };
 	})
 	.controller('MainController', MainController);
@@ -30,13 +28,14 @@
 		vm.startPause = startPause;
 		vm.finalizar = finalizar;
 		vm.getOciosidade = getOciosidade;
+		vm.removeTarefa = removeTarefa;
 
 		//////////////////////
 		init();
 		function init(){
 			MainService.setOnWork(onWork);
 			if($localStorage.listaTarefas){
-				vm.listaTarefas = $localStorage.listaTarefas;
+				vm.listaTarefas = $localStorage.listaTarefas.reverse();
 				geraListaOciosidade();
 			}
 			if($localStorage.tarefaAtual){
@@ -85,7 +84,9 @@
 		function onWork (dados){
 			if(dados.running){
 				vm.tarefa = angular.extend({}, vm.tarefa, dados);
+				save();
 			}
+
 			if(dados.finalizar){
 				reset();
 			}
@@ -109,7 +110,7 @@
 
 		function cancelTimer(finaliza){
 			MainService.doWork({
-				acao: 'finalizar',
+				acao: finaliza ? 'finalizar' : 'pause',
 			});
 			vm.tarefa.running = false;
 			save();
@@ -119,7 +120,8 @@
 			$localStorage.tarefaAtual = vm.tarefa;
 			if(inList){
 				vm.listaTarefas.push(vm.tarefa);
-				$localStorage.listaTarefas = vm.listaTarefas;
+				$localStorage.listaTarefas = vm.listaTarefas.reverse();
+				geraListaOciosidade();
 			}
 		}
 
@@ -140,6 +142,11 @@
 					vm.listaOciosidade[data].total += tarefa.count;
 				}
 			});
+		}
+
+		function removeTarefa(index){
+			vm.listaTarefas.splice(index,1);
+			geraListaOciosidade();
 		}
 	}
 })();
