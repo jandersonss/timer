@@ -4,7 +4,7 @@
 	angular.module("app")
 	.service("MainService",function($q){
 
-		var worker = new Worker('/app/main/doWork.js');
+		var worker = new Worker(window.location.pathname+'app/main/doWork.js');
 		
 		var service = {
 			onWork: null,
