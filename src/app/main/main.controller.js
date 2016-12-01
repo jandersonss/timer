@@ -50,6 +50,7 @@
 		var modelTarefa = {
 			descricao:'',
 			count:0,
+			points:[],
 			timer:null,
 			running:false,
 			inicio:null,
@@ -73,6 +74,9 @@
 			}
 			if($localStorage.tarefaAtual){
 				vm.tarefa = $localStorage.tarefaAtual;
+				if(!vm.tarefa.points){
+					vm.tarefa.points = [];
+				}
 			}else{
 				vm.tarefa = angular.copy(modelTarefa);
 				reset()
@@ -92,11 +96,15 @@
 		function startPause(){
 			//Pausa
 			if(vm.tarefa.running){
+				vm.tarefa.points.push((new Date()).getTime());
 				cancelTimer();
 				return;
 			}
 			//Inicia
-			vm.tarefa.inicio = new Date();
+			if(vm.tarefa.count == 0)
+				vm.tarefa.inicio = new Date();
+
+			vm.tarefa.points.push((new Date()).getTime());
 			onTimeout();
 		}
 
@@ -109,6 +117,7 @@
 				return;
 			}
 			vm.tarefa.final = new Date();
+			vm.tarefa.points.push((new Date()).getTime());
 			cancelTimer(true);
 			save(true);
 			reset();
