@@ -22,10 +22,11 @@ function calculeCount(){
 	return moment.duration(now.diff(sum)).asSeconds();
 }
 
-function onTimeout(){
+function onInterval(){
 	data.running = true;
+	//data.count++;
 	data.count = calculeCount();
-	timer = setTimeout(onTimeout,1000);
+	//timer = setInterval(onInterval,1000);
 	self.postMessage(data);
 }
 
@@ -41,7 +42,8 @@ self.onmessage = function(e) {
 	switch(e.data.acao){
 		case 'start':
 			data.finalizar = false;
-			onTimeout();
+			//data.count = e.data.count;
+			timer = setInterval(onInterval,1000);//onInterval();
 			break;
 		case 'pause': 
 			cancelTimer();
