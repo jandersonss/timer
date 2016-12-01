@@ -35,7 +35,7 @@
 		function init(){
 			MainService.setOnWork(onWork);
 			if($localStorage.listaTarefas){
-				vm.listaTarefas = $localStorage.listaTarefas.reverse();
+				vm.listaTarefas = sortList($localStorage.listaTarefas);
 				geraListaOciosidade();
 			}
 			if($localStorage.tarefaAtual){
@@ -120,7 +120,7 @@
 			$localStorage.tarefaAtual = vm.tarefa;
 			if(inList){
 				vm.listaTarefas.push(vm.tarefa);
-				$localStorage.listaTarefas = vm.listaTarefas.reverse();
+				$localStorage.listaTarefas = angular.copy(vm.listaTarefas);
 				geraListaOciosidade();
 			}
 		}
@@ -141,6 +141,12 @@
 				}else{
 					vm.listaOciosidade[data].total += tarefa.count;
 				}
+			});
+		}
+
+		function sortList(listaTarefas){
+			return listaTarefas.sort(function(a,b){
+				return (new Date(a.inicio)).getTime() < (new Date(b.inicio)).getTime();
 			});
 		}
 
