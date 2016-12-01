@@ -45,7 +45,7 @@
 	})
 	.controller('MainController', MainController);
 
-	function MainController($scope, $localStorage, $timeout, $log ,toastr, MainService){
+	function MainController($scope, $window, $localStorage, $timeout, $log ,toastr, MainService){
 		var vm = this;
 		var modelTarefa = {
 			descricao:'',
@@ -56,6 +56,8 @@
 			inicio:null,
 			final:null
 		};
+		vm.regex = /^[0-9]{1,7}(\.[0-9]+)?$/;
+		vm.cargaHoraria = 8.5;
 		vm.tarefa = {};
 		vm.listaTarefas = [];
 		vm.listaOciosidade = {};
@@ -63,7 +65,13 @@
 		vm.finalizar = finalizar;
 		vm.getOciosidade = getOciosidade;
 		vm.removeTarefa = removeTarefa;
-
+		vm.geraListaOciosidade = geraListaOciosidade;
+		vm.vw = $window.innerWidth;
+		$(window).on("resize.doResize", function (){
+	      $scope.$apply(function(){
+	          vm.vw = $window.innerWidth;
+	      });
+	  	});
 		//////////////////////
 		init();
 		function init(){
@@ -159,6 +167,7 @@
 		}
 
 		function save(inList){
+			$localStorage.cargaHoraria = vm.cargaHoraria;
 			$localStorage.tarefaAtual = vm.tarefa;
 			if(inList){
 				vm.listaTarefas.push(vm.tarefa);
@@ -168,11 +177,11 @@
 		}
 
 		function getOciosidade(count){
-			var hours = moment.duration(8.5, 'hours');
-			return hours.asSeconds() - count;
+			var hours = moment.duration(Number(vm.cargaHoraria), 'hours');
+			return hours.asSeconds() - (count+vm.tarefa.count);
 		}
 
-		function geraListaOciosidade(){
+		function geraListaOciosidade(event){
 			vm.listaTarefas.forEach(function(tarefa, i){
 				var data = moment(tarefa.inicio).format("DD/MM/YYYY");
 				if(!vm.listaOciosidade.hasOwnProperty(data)){
@@ -183,7 +192,10 @@
 				}else{
 					vm.listaOciosidade[data].total += tarefa.count;
 				}
+
 			});
+			if(event)
+				$scope.$apply();
 		}
 
 		function sortList(listaTarefas){

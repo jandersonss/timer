@@ -3,17 +3,17 @@
 		<div class="col-md-offset-1 col-md-9">
 			<div class="clearfix text-center">
 				<h1 class="text-center text-primary">Timer</h1>
-				<div class="input-group input-group-lg">
+				<div class="input-group " ng-class="{'input-group-lg':vm.vw > 767}">
 				  <input type="text" class="form-control" ng-model="vm.tarefa.descricao" placeholder="Descricao Tarefa" >
 				  <span class="input-group-addon">{{vm.tarefa.count | formatTimer}}</span>
 				</div>
 			</div>
 			<br>
 			<div class="btn-group btn-group-justified" role="group" aria-label="...">
-				<div class="btn-group  btn-group-lg" role="group">
+				<div class="btn-group " ng-class="{'btn-group-lg':vm.vw > 767}" role="group">
 					<button class="btn " ng-class="{'btn-danger': vm.tarefa.running, 'btn-primary':!vm.tarefa.running}" ng-click="vm.startPause()">{{!vm.tarefa.running ? 'Iniciar' : 'Pausar'}}</button>
 				</div>
-				<div class="btn-group  btn-group-lg" role="group">
+				<div class="btn-group" ng-class="{'btn-group-lg':vm.vw > 767}" role="group">
 					<button class="btn btn-warning" on-long-press="vm.finalizar()" ng-disabled="vm.tarefa.count == 0">Segure para Finalizar</button>
 				</div>
 			</div>
@@ -22,40 +22,55 @@
 				<div class="col-md-8">
 					<div class="panel panel-default">
 						<div class="panel-heading"><label>Registro de atividades</label></div>
-						<table class="table table-bordered table-striped table-responsive">
-							<thead>
-								<tr>
-									<th>Descricao</th>
-									<th>Início</th>
-									<th>Final</th>
-									<th>Tempo usado</th>
-									<th></th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr ng-repeat="(key, tarefa) in vm.listaTarefas">
-									<td>{{tarefa.descricao}}</td>
-									<td>{{tarefa.inicio | date : 'dd/MM/yyyy HH:mm:ss'}}</td>
-									<td>{{tarefa.final | date : 'dd/MM/yyyy HH:mm:ss'}}</td>
-									<td>{{tarefa.count | formatTimer}}</td>
-									<td>
-										<button 
-											title="Excluir"
-											ng-click="vm.removeTarefa(key)"
-											type="button" 
-											class="btn btn-xs btn-danger">
-												<i class="glyphicon glyphicon-trash"></i>
-										</button>
-									</td>
-								</tr>
-							</tbody>
-						</table>
+						<div class="table-responsive">
+							<table class="table table-condensed table-bordered table-striped table-responsive">
+								<thead>
+									<tr>
+										<th></th>
+										<th>Descricao</th>
+										<th>Data</th>
+										<th>Tempo usado</th>
+										<th>Pausas</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-repeat-start="(key, tarefa) in vm.listaTarefas">
+										<td rowspan="2">
+											<button 
+												title="Excluir"
+												ng-click="vm.removeTarefa(key)"
+												type="button" 
+												class="btn btn-xs btn-danger">
+													<i class="glyphicon glyphicon-trash"></i>
+											</button>
+										</td>
+										<td rowspan="2">{{tarefa.descricao}}</td>
+										<td><strong>Início:</strong> {{tarefa.inicio | date : 'dd/MM/yyyy HH:mm:ss'}}</td>
+										<td rowspan="2">{{tarefa.count | formatTimer}}</td>
+										<td rowspan="2">{{tarefa.points.length > 2 ? tarefa.points.length-2 : 0 }}</td>
+									</tr>
+									<tr ng-repeat-end="(key, tarefa) in vm.listaTarefas">
+										<td><strong>Final:</strong> {{tarefa.final | date : 'dd/MM/yyyy HH:mm:ss'}}</td>
+								    </tr>
+								</tbody>
+							</table>
+							
+						</div>
 					</div>
 				</div>
 				<div class="col-md-4">
 					<div class="panel panel-default">
-						<div class="panel-heading"><label>Registro de ociosidade</label></div>
-						<table class="table table-bordered table-striped table-responsive">
+						<div class="panel-heading">
+							<label>Registro de ociosidade</label>
+						</div>
+						<form name="formCargaHoraria" class="panel-heading">
+							<div class="input-group" ng-class="{'has-error':!formCargaHoraria.cargaHoraria.$valid}">
+							  <span class="input-group-addon" id="basic-addon2">Carga horária (h)</span>
+							  <input type="text" id="cargaHoraria" name="cargaHoraria" class="form-control" 
+							  ng-model="vm.cargaHoraria" ng-model-options="{ updateOn: 'blur', allowInvalid: '$inherit' }" ng-pattern="vm.regex">
+							</div>
+						</form>
+						<table class="table table-condensed table-bordered table-striped table-responsive">
 							<thead>
 								<tr>
 									<th>Data</th>
