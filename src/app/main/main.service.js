@@ -3,8 +3,8 @@
 
 	angular.module("app")
 	.service("MainService",function($q){
-
-		var worker = new Worker(window.location.pathname+'app/main/doWork.js');
+		var path = window.location.pathname.indexOf("timer-count") != -1 ? '/timer/' : window.location.pathname;
+		var worker = new Worker(path+'app/main/doWork.js');
 		
 		var service = {
 			onWork: null,
