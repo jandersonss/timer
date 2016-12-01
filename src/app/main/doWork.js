@@ -9,17 +9,27 @@ var data = {
 };
 
 function calculeCount(){
-	var momentTotal = null;
+	var momentTotal = [0];
 	var now = moment();
-	var partial = data.points.reduce(function(previousValue, currentValue, index, array){
-		var a = moment.duration(currentValue).seconds();
-		var b =  index == 0 ? moment(previousValue).seconds() : previousValue;
-		return a+b;
+	if(data.points.length > 3){
+		var last =  moment(data.points[data.points.length-2]);
+		for(i=0; i < (data.points.length-3); i++){
+			var a = moment(data.points[i]);
+			var b =  moment(data.points[i+1]);
+			var result = moment.duration(b.diff(a)).asSeconds();
+			momentTotal.push(result);
+		}
+	}else{
+		var last =  moment(data.points[0]);
+	}
+	//console.log('partial', partial.seconds());
+	var sum = momentTotal.reduce(function(previousValue, currentValue, index, array){
+		return previousValue+currentValue;
 	});
+	//console.log(momentTotal);
+	var diff = now.diff(last);
 
-	var sum = moment(partial);
-
-	return moment.duration(now.diff(sum)).asSeconds();
+	return moment.duration(diff).add(sum,'seconds').asSeconds();
 }
 
 function onInterval(){
@@ -42,7 +52,7 @@ self.onmessage = function(e) {
 	switch(e.data.acao){
 		case 'start':
 			data.finalizar = false;
-			//data.count = e.data.count;
+			data.count = e.data.count;
 			timer = setInterval(onInterval,1000);//onInterval();
 			break;
 		case 'pause': 
