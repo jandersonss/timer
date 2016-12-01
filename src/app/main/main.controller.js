@@ -14,7 +14,7 @@
 		return {
 			restrict: 'A',
 			link: function($scope, $elm, $attrs) {
-				$elm.bind('touchstart mousedown', function(evt) {
+				$elm.bind('mousedown', function(evt) {
 					// Locally scoped variable that will keep track of the long press
 					$scope.longPress = true;
 
@@ -30,7 +30,7 @@
 					}, 600);
 				});
 
-				$elm.bind('touchend mouseup', function(evt) {
+				$elm.bind('mouseup', function(evt) {
 					// Prevent the onLongPress event from firing
 					$scope.longPress = false;
 					// If there is an on-touch-end function attached to this element, apply it
@@ -143,7 +143,7 @@
 
 		function onTimeout(){
 			vm.tarefa.running = true;
-			vm.tarefa.count++;
+			//vm.tarefa.count++;
 			//$scope.$apply();
 			startWorker();
 
@@ -151,10 +151,10 @@
 		}
 
 		function cancelTimer(finaliza){
-			MainService.doWork({
-				acao: finaliza ? 'finalizar' : 'pause',
-			});
 			vm.tarefa.running = false;
+			MainService.doWork(angular.extend({}, vm.tarefa, {
+				acao: finaliza ? 'finalizar' : 'pause',
+			}));
 			save();
 		}
 

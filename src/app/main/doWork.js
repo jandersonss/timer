@@ -1,3 +1,14 @@
+Array.prototype.chunk = function (unit) {
+	var results = [],
+	length = Math.ceil(this.length / unit);
+
+	for (var i = 0; i < length; i++) {
+		results.push(this.slice(i * unit, (i + 1) * unit));
+	}
+	return results;
+}
+
+
 var path = self.location.pathname.replace('app/main/doWork.js','').indexOf("timer-count") != -1 ? '/timer/' : self.location.pathname.replace('app/main/doWork.js','');
 self.importScripts(path+'bower_components/moment/min/moment.min.js');
 var timer;
@@ -8,25 +19,29 @@ var data = {
 	finalizar:false
 };
 
+
 function calculeCount(){
 	var momentTotal = [0];
-	var now = moment();
-	if(data.points.length > 3){
-		var last =  moment(data.points[data.points.length-2]);
-		for(i=0; i < (data.points.length-3); i++){
-			var a = moment(data.points[i]);
-			var b =  moment(data.points[i+1]);
+	var pares = data.points.chunk(2);
+	var last;
+	
+	for(i=0; i < pares.length; i++){
+		if(pares[i].length == 2){
+			var a = moment(pares[i][0]);
+			var b =  moment(pares[i][1]);
 			var result = moment.duration(b.diff(a)).asSeconds();
 			momentTotal.push(result);
 		}
-	}else{
-		var last =  moment(data.points[0]);
 	}
+	if(data.points.length%2 != 0){
+		last =  moment(pares[pares.length-1][0]);
+	}
+
 	//console.log('partial', partial.seconds());
 	var sum = momentTotal.reduce(function(previousValue, currentValue, index, array){
 		return previousValue+currentValue;
 	});
-	//console.log(momentTotal);
+	var now = moment();
 	var diff = now.diff(last);
 
 	return moment.duration(diff).add(sum,'seconds').asSeconds();
@@ -43,6 +58,7 @@ function onInterval(){
 function cancelTimer(){
 	if(timer)
 		clearInterval(timer);
+	data.count = calculeCount();
 	data.running = false;
 	self.postMessage(data);
 }
