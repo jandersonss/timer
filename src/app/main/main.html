@@ -14,7 +14,7 @@
 					<button class="btn " ng-class="{'btn-danger': vm.tarefa.running, 'btn-primary':!vm.tarefa.running}" ng-click="vm.startPause()">{{!vm.tarefa.running ? 'Iniciar' : 'Pausar'}}</button>
 				</div>
 				<div class="btn-group  btn-group-lg" role="group">
-					<button class="btn btn-warning" ng-click="vm.finalizar()" ng-disabled="vm.tarefa.count == 0">Finalizar</button>
+					<button class="btn btn-warning" on-long-press="vm.finalizar()" ng-disabled="vm.tarefa.count == 0">Segure para Finalizar</button>
 				</div>
 			</div>
 			<br>
@@ -26,7 +26,7 @@
 							<thead>
 								<tr>
 									<th>Descricao</th>
-									<th>Inicio</th>
+									<th>Início</th>
 									<th>Final</th>
 									<th>Tempo usado</th>
 									<th></th>
