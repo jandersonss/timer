@@ -207,6 +207,7 @@
 		function removeTarefa(index){
 			vm.listaTarefas.splice(index,1);
 			geraListaOciosidade();
+			save(true);
 		}
 	}
 })();

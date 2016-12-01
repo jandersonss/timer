@@ -3,7 +3,8 @@
   
 	angular.module("app")
 	.run(runBlock);
-	function runBlock($log) {
+	function runBlock($log, $rootScope) {
 		$log.debug('Iniciado');
+    	$rootScope.keys = Object.keys;
 	}
 })();
