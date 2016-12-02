@@ -206,8 +206,8 @@
 
 		function removeTarefa(index){
 			vm.listaTarefas.splice(index,1);
+			$localStorage.listaTarefas = angular.copy(vm.listaTarefas);
 			geraListaOciosidade();
-			save(true);
 		}
 	}
 })();
