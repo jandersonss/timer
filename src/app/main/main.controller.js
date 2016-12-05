@@ -45,7 +45,7 @@
 	})
 	.controller('MainController', MainController);
 
-	function MainController($scope, $window, $localStorage, $timeout, $log ,toastr, MainService){
+	function MainController($rootScope, $scope, $window, $localStorage, $timeout, $log ,toastr, MainService){
 		var vm = this;
 		var modelTarefa = {
 			descricao:'',
@@ -199,8 +199,8 @@
 				}
 
 			});
-			if(event)
-				$scope.$apply();
+			//if(event)
+				$rootScope.safeApply();
 		}
 
 		function sortList(listaTarefas){
