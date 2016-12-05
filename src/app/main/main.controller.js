@@ -176,9 +176,14 @@
 			}
 		}
 
-		function getOciosidade(count){
+		function getOciosidade(item){
+			var data = moment(item.data, "DD/MM/YYYY").format("DDMMYYYY");
+			var now = moment().format("DDMMYYYY");
 			var hours = moment.duration(Number(vm.cargaHoraria), 'hours');
-			return hours.asSeconds() - (count+vm.tarefa.count);
+			if(data === now)
+				return hours.asSeconds() - (item.total+vm.tarefa.count);
+			else 
+				return hours.asSeconds() - item.total;
 		}
 
 		function geraListaOciosidade(event){

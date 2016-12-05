@@ -86,7 +86,7 @@
 								</tr>
 								<tr ng-repeat="(key, value) in vm.listaOciosidade">
 									<td>{{value.data | date : 'dd/MM/yyyy HH:mm:ss'}}</td>
-									<td>{{vm.getOciosidade(value.total) | formatTimer}}</td>
+									<td>{{vm.getOciosidade(value) | formatTimer}}</td>
 								</tr>
 							</tbody>
 						</table>
