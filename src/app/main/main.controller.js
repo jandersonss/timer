@@ -170,7 +170,7 @@
 			$localStorage.cargaHoraria = vm.cargaHoraria;
 			$localStorage.tarefaAtual = vm.tarefa;
 			if(inList){
-				vm.listaTarefas.push(vm.tarefa);
+				vm.listaTarefas.unshift(vm.tarefa);
 				$localStorage.listaTarefas = angular.copy(vm.listaTarefas);
 				geraListaOciosidade();
 			}
