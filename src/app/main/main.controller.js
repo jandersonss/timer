@@ -106,7 +106,8 @@
 	    })();
 
 		vm.export = function(){
-			tableToExcel('table-tarefas','Tarefas','Tarefas.xls');
+			var hoje = moment().format('DD-MM-YYYY');
+			tableToExcel('table-tarefas','Tarefas','Tarefas-'+hoje+'.xls');
 		};
 		
 		vm.vw = $window.innerWidth;
