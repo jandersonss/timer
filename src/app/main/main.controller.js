@@ -77,6 +77,37 @@
 		vm.removeTarefa = removeTarefa;
 		vm.geraListaOciosidade = geraListaOciosidade;
 		vm.alterarData = alterarData;
+
+
+		var tableToExcel = (function () {
+	        var uri = 'data:application/vnd.ms-excel;base64,'
+	        , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
+	        , base64 = function (s) { return window.btoa(unescape(encodeURIComponent(s))) }
+	        , format = function (s, c) { return s.replace(/{(\w+)}/g, function (m, p) { return c[p]; }) }
+	        , getHtmlTabela = function (table){
+				var tab = $(table).clone();
+				tab.find('button.btn-danger').parent().text('');
+				tab.find('button').remove();
+				tab.find("tr").map(function(i, val){
+					$(val).find('>td:eq(0):empty,>th:eq(0):empty').remove();
+				});
+				console.log(window.t = tab);
+				return tab.html();
+			};
+	        return function (table, name, filename) {
+	            if (!table.nodeType) table = document.getElementById(table)
+	            var ctx = { worksheet: name || 'Worksheet', table: getHtmlTabela(table) }
+
+	            document.getElementById("dlink").href = uri + base64(format(template, ctx));
+	            document.getElementById("dlink").download = filename;
+	            document.getElementById("dlink").click();
+
+	        }
+	    })();
+
+		vm.export = function(){
+			tableToExcel('table-tarefas','Tarefas','Tarefas.xls');
+		};
 		
 		vm.vw = $window.innerWidth;
 

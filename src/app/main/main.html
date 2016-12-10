@@ -21,9 +21,12 @@
 			<div class="row">
 				<div class="col-md-8">
 					<div class="panel panel-default">
-						<div class="panel-heading"><label>Registro de atividades</label></div>
+						<div class="panel-heading">
+							<label>Registro de atividades</label>
+							<button type="button" class="btn btn-xs btn-info pull-right" ng-click="vm.export()">Exportar</button>	
+						</div>
 						<div class="table-responsive">
-							<table class="table table-condensed table-bordered table-striped table-responsive">
+							<table id="table-tarefas" class="table table-condensed table-bordered table-striped table-responsive">
 								<thead>
 									<tr>
 										<th></th>
@@ -93,7 +96,7 @@
 							  ng-model="vm.cargaHoraria" ng-model-options="{ updateOn: 'blur', allowInvalid: '$inherit' }" ng-pattern="vm.regex">
 							</div>
 						</form>
-						<table class="table table-condensed table-bordered table-striped table-responsive">
+						<table class="table table-condensed table-bordered table-striped table-responsive" id="table-ociosidade">
 							<thead>
 								<tr>
 									<th>Data</th>
@@ -155,4 +158,5 @@
             <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
         </div>
     </script>
+    <a id="dlink"  style="display:none;"></a>
 </div>
