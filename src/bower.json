@@ -26,6 +26,7 @@
     "angular-toastr": "~1.5.0",
     "animate.css": "~3.4.0",
     "bootstrap": "^3.3.7",
-    "ngstorage": "^0.3.11"
+    "ngstorage": "^0.3.11",
+    "angular-moment-picker": "moment-picker#^0.8.2"
   }
 }

@@ -7,7 +7,9 @@
 		    'ngSanitize',
 	    	'toastr',
 	    	'ngStorage',
-	    	'ui.router'
+	    	'ui.router',
+	    	'moment-picker',
+	    	'ui.bootstrap'
 	    ]);
 
   

@@ -43,9 +43,19 @@
 			}
 		};
 	})
+
 	.controller('MainController', MainController);
 
-	function MainController($rootScope, $scope, $window, $localStorage, $timeout, $log ,toastr, MainService){
+	function MainController($rootScope,
+			$scope,
+			$window, 
+			$localStorage, 
+			$timeout, 
+			$log ,
+			toastr, 
+			MainService,
+			$uibModal){
+
 		var vm = this;
 		var modelTarefa = {
 			descricao:'',
@@ -66,7 +76,10 @@
 		vm.getOciosidade = getOciosidade;
 		vm.removeTarefa = removeTarefa;
 		vm.geraListaOciosidade = geraListaOciosidade;
+		vm.alterarData = alterarData;
+		
 		vm.vw = $window.innerWidth;
+
 		$(window).on("resize.doResize", function (){
 	      $scope.$apply(function(){
 	          vm.vw = $window.innerWidth;
@@ -102,21 +115,25 @@
 		}
 
 		function startPause(){
+			var point = new Date()
 			//Pausa
 			if(vm.tarefa.running){
-				vm.tarefa.points.push((new Date()).getTime());
+				vm.tarefa.points.push(point.getTime());
 				cancelTimer();
 				return;
 			}
 			//Inicia
 			if(vm.tarefa.count == 0)
-				vm.tarefa.inicio = new Date();
+				vm.tarefa.inicio = point;
 
-			vm.tarefa.points.push((new Date()).getTime());
+			vm.tarefa.points.push(point.getTime());
 			onTimeout();
 		}
 
 		function finalizar(){
+			$log.log($window);
+			$log.log(window.t = $window.t = toastr);
+			
 			if(vm.tarefa.count == 0){
 				toastr.error("Tarefa não iniciada.", 'Ops!');
 				return;
@@ -187,7 +204,9 @@
 		}
 
 		function geraListaOciosidade(event){
-			vm.listaTarefas.forEach(function(tarefa, i){
+			vm.listaOciosidade = {};
+			for(var i=0; i < vm.listaTarefas.length;i++){
+				var tarefa = vm.listaTarefas[i];
 				var data = moment(tarefa.inicio).format("DD/MM/YYYY");
 				if(!vm.listaOciosidade.hasOwnProperty(data)){
 					vm.listaOciosidade[data] = {
@@ -198,15 +217,59 @@
 					vm.listaOciosidade[data].total += tarefa.count;
 				}
 
-			});
-			//if(event)
+			};
+
+			$timeout(function(){
 				$rootScope.safeApply();
+			}, 100);
 		}
 
 		function sortList(listaTarefas){
 			return listaTarefas.sort(function(a,b){
 				return (new Date(a.inicio)).getTime() < (new Date(b.inicio)).getTime();
 			});
+		}
+
+		function alterarData(tarefa, point){
+
+			if('inicio|final'.indexOf(point) === -1){
+				return;
+			}
+
+			var modalInstance = $uibModal.open({
+				animation: $scope.animationsEnabled,
+				templateUrl: 'modalAlterarData.html',
+				controller: 'ModalAlterarDataCtrl',
+				size: 'sm',
+				resolve: {
+					data: function () {
+						return moment(tarefa[point]);
+					},
+					point:function(){
+						return point === 'inicio' ? 'início' : point;
+					}
+				}
+			});
+
+
+			modalInstance.result.then(function (novaData) {
+				tarefa[point] = novaData.toISOString();
+				
+				var index = point === 'inicio' ? 0 : tarefa.points.length-1;
+				
+				if(tarefa.points.hasOwnProperty(index))
+					tarefa.points[index] = novaData.toDate().getTime();
+
+				tarefa.count = MainService.calculeCount(tarefa.points);
+				if(!vm.tarefa.running)
+					save();
+				
+				geraListaOciosidade();
+
+
+			});
+
+			
 		}
 
 		function removeTarefa(index){

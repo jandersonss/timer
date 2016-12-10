@@ -48,12 +48,32 @@
 											</button>
 										</td>
 										<td rowspan="2">{{tarefa.descricao}}</td>
-										<td><strong>Início:</strong> {{tarefa.inicio | date : 'dd/MM/yyyy HH:mm:ss'}}</td>
+										<td>
+											<strong>Início:</strong> 
+											{{tarefa.inicio | date : 'dd/MM/yyyy HH:mm:ss'}} 
+											<button 
+												title="Alterar"
+												ng-click="vm.alterarData(tarefa, 'inicio')"
+												type="button" 
+												class="btn btn-xs btn-default pull-right">
+													<i class="glyphicon glyphicon-pencil"></i>
+											</button>
+										</td>
 										<td rowspan="2">{{tarefa.count | formatTimer}}</td>
 										<td rowspan="2">{{tarefa.points.length > 2 ? tarefa.points.length-2 : 0 }}</td>
 									</tr>
 									<tr ng-repeat-end="(key, tarefa) in vm.listaTarefas">
-										<td><strong>Final:</strong> {{tarefa.final | date : 'dd/MM/yyyy HH:mm:ss'}}</td>
+										<td>
+											<strong>Final:</strong> 
+											{{tarefa.final | date : 'dd/MM/yyyy HH:mm:ss'}}
+											<button 
+												title="Alterar"
+												ng-click="vm.alterarData(tarefa, 'final')"
+												type="button" 
+												class="btn btn-xs btn-default pull-right">
+													<i class="glyphicon glyphicon-pencil"></i>
+											</button>
+										</td>
 								    </tr>
 								</tbody>
 							</table>
@@ -115,4 +135,24 @@
 			<a href="//jandersonlemos.ml" title="Voltar ao site" class="btn btn-default">Voltar ao site</a>
 		</div>
 	</div>
+	<script type="text/ng-template" id="modalAlterarData.html">
+        <div class="modal-header">
+            <h3 class="modal-title">Alterar data {{point}}</h3>
+        </div>
+        <div class="modal-body">
+            
+		    <input 
+           		class="form-control"
+		    	ng-model="novaData"
+				ng-model-options="{ updateOn: 'blur' }"
+				placeholder="Selecionar nova data..."
+				moment-picker="data"
+				max-date="now"> <br>
+    
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+            <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+        </div>
+    </script>
 </div>

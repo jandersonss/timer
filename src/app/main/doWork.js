@@ -20,9 +20,9 @@ var data = {
 };
 
 
-function calculeCount(){
+function calculeCount(points){
 	var momentTotal = [0];
-	var pares = data.points.chunk(2);
+	var pares = points.chunk(2);
 	var last;
 	
 	for(i=0; i < pares.length; i++){
@@ -33,7 +33,7 @@ function calculeCount(){
 			momentTotal.push(result);
 		}
 	}
-	if(data.points.length%2 != 0){
+	if(points.length%2 != 0){
 		last =  moment(pares[pares.length-1][0]);
 	}
 
@@ -44,13 +44,15 @@ function calculeCount(){
 	var now = moment();
 	var diff = now.diff(last);
 
-	return moment.duration(diff).add(sum,'seconds').asSeconds();
+	var result = moment.duration(diff).add(sum,'seconds').asSeconds();
+
+	return result;
 }
 
 function onInterval(){
 	data.running = true;
 	//data.count++;
-	data.count = calculeCount();
+	data.count = calculeCount(data.points);
 	//timer = setInterval(onInterval,1000);
 	self.postMessage(data);
 }
@@ -58,7 +60,7 @@ function onInterval(){
 function cancelTimer(){
 	if(timer)
 		clearInterval(timer);
-	data.count = calculeCount();
+	data.count = calculeCount(data.points);
 	data.running = false;
 	self.postMessage(data);
 }
@@ -66,6 +68,9 @@ function cancelTimer(){
 self.onmessage = function(e) {
 	data.points = e.data.points;
 	switch(e.data.acao){
+		case 'calculeCount':
+			calculeCount(e.data.points, true);
+			break;
 		case 'start':
 			data.finalizar = false;
 			data.count = e.data.count;
