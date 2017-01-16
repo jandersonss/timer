@@ -216,13 +216,13 @@
 		}
 
 		function save(inList){
-			$localStorage.cargaHoraria = vm.cargaHoraria;
-			$localStorage.tarefaAtual = vm.tarefa;
 			if(inList){
 				vm.listaTarefas.unshift(vm.tarefa);
-				$localStorage.listaTarefas = angular.copy(vm.listaTarefas);
-				geraListaOciosidade();
 			}
+			$localStorage.cargaHoraria = vm.cargaHoraria;
+			$localStorage.tarefaAtual = vm.tarefa;
+			$localStorage.listaTarefas = angular.copy(vm.listaTarefas);
+			geraListaOciosidade();
 		}
 
 		function getOciosidade(item){
@@ -233,7 +233,7 @@
 				var tempo = hours.asSeconds() - (item.total+vm.tarefa.count);
 				if(tempo < 0){
 					item.tipoSaldo = '+';
-					return (tempo - hours.asSeconds()) - hours.asSeconds();
+					return tempo*-1;
 				}
 				item.tipoSaldo = '-';
 				return tempo;
@@ -241,7 +241,7 @@
 				var tempo = hours.asSeconds() - item.total;
 				if(tempo < 0){
 					item.tipoSaldo = '+';
-					return (tempo - hours.asSeconds()) - hours.asSeconds();
+					return tempo*-1;
 				}
 				item.tipoSaldo = '-';
 				return tempo;
@@ -306,8 +306,10 @@
 					tarefa.points[index] = novaData.toDate().getTime();
 
 				tarefa.count = MainService.calculeCount(tarefa.points);
-				if(!vm.tarefa.running)
+				if(!vm.tarefa.running){
 					save();
+					$localStorage.listaTarefas = angular.copy(vm.listaTarefas);
+				}
 				
 				geraListaOciosidade();
 
