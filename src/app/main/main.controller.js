@@ -229,10 +229,23 @@
 			var data = moment(item.data, "DD/MM/YYYY").format("DDMMYYYY");
 			var now = moment().format("DDMMYYYY");
 			var hours = moment.duration(Number(vm.cargaHoraria), 'hours');
-			if(data === now)
-				return hours.asSeconds() - (item.total+vm.tarefa.count);
-			else 
-				return hours.asSeconds() - item.total;
+			if(data === now){
+				var tempo = hours.asSeconds() - (item.total+vm.tarefa.count);
+				if(tempo < 0){
+					item.tipoSaldo = '+';
+					return (tempo - hours.asSeconds()) - hours.asSeconds();
+				}
+				item.tipoSaldo = '-';
+				return tempo;
+			} else {
+				var tempo = hours.asSeconds() - item.total;
+				if(tempo < 0){
+					item.tipoSaldo = '+';
+					return (tempo - hours.asSeconds()) - hours.asSeconds();
+				}
+				item.tipoSaldo = '-';
+				return tempo;
+			}
 		}
 
 		function geraListaOciosidade(event){
