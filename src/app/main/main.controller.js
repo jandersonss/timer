@@ -91,7 +91,6 @@
 				tab.find("tr").map(function(i, val){
 					$(val).find('>td:eq(0):empty,>th:eq(0):empty').remove();
 				});
-				console.log(window.t = tab);
 				return tab.html();
 			};
 	        return function (table, name, filename) {
@@ -271,7 +270,9 @@
 
 		function sortList(listaTarefas){
 			return listaTarefas.sort(function(a,b){
-				return (new Date(a.inicio)).getTime() < (new Date(b.inicio)).getTime();
+				var iniA = moment(a.inicio, "YYYY-MM-DDTHH:mm:ss.SSS[Z]");
+				var iniB = moment(b.inicio, "YYYY-MM-DDTHH:mm:ss.SSS[Z]");
+				return (iniA.toDate()).getTime() < (iniB.toDate()).getTime();
 			});
 		}
 
