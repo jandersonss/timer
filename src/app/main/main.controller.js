@@ -270,9 +270,9 @@
 
 		function sortList(listaTarefas){
 			return listaTarefas.sort(function(a,b){
-				var iniA = moment(a.inicio, "YYYY-MM-DDTHH:mm:ss.SSS[Z]");
-				var iniB = moment(b.inicio, "YYYY-MM-DDTHH:mm:ss.SSS[Z]");
-				return (iniA.toDate()).getTime() < (iniB.toDate()).getTime();
+				var iniA = moment(a.inicio, "YYYY-MM-DD[T]HH:mm:ss.SSS[Z]");
+				var iniB = moment(b.inicio, "YYYY-MM-DD[T]HH:mm:ss.SSS[Z]");
+				return iniA.unix() < iniB.unix();
 			});
 		}
 
